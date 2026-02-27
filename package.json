@@ -1,0 +1,66 @@
+{
+  "name": "@axeforging/playwright-smart-locators",
+  "version": "1.0.1",
+  "description": "AI-powered self-healing smart web locators for Playwright tests.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./dist/reporter": {
+      "default": "./dist/reporter.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "test": "npx playwright test"
+  },
+  "keywords": [
+    "playwright",
+    "self-healing",
+    "auto-healing",
+    "ai",
+    "llm",
+    "e2e",
+    "testing",
+    "test-automation",
+    "locators",
+    "css-selectors",
+    "dom-caching",
+    "page-object-model",
+    "pom",
+    "ollama",
+    "openai",
+    "anthropic",
+    "flaky-tests",
+    "qa"
+  ],
+  "peerDependencies": {
+    "@playwright/test": ">=1.30.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/ai-healer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/ai-healer/issues"
+  },
+  "homepage": "https://github.com/your-username/ai-healer#readme",
+  "author": "QA Architecture Team",
+  "license": "ISC"
+}

@@ -1,0 +1,16 @@
+{
+    "name": "example-auto-heal",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Example Playwright project with AI Auto-Healing",
+    "scripts": {
+        "test": "playwright test"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.40.0",
+        "@types/node": "^20.0.0"
+    },
+    "dependencies": {
+        "@axeforging/playwright-smart-locators": "^1.0.0"
+    }
+}

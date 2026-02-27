@@ -1,0 +1,6 @@
+.github/
+example/
+tests/
+tsconfig.json
+.eslintrc*
+.prettierrc*
