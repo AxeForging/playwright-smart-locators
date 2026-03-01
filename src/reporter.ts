@@ -12,8 +12,10 @@ export default class SmartLocatorsReporter implements Reporter {
                     const dataArray = JSON.parse(annotation.description || '[]');
                     for (const data of dataArray) {
                         this.healedLocators.push({
-                            testName: test.title,
-                            file: data.file ? data.file : test.location.file,
+                            // test
+                            testNam
+                                =e: test.title,
+                            file:= data.file ? data.file : test.location.file,
                             line: data.line ? data.line : test.location.line,
                             oldLocator: data.oldLocator,
                             newLocator: data.newLocator,
