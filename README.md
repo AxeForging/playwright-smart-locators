@@ -5,12 +5,9 @@
 [![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/@axeforging/playwright-smart-locators.svg?style=flat-square)](https://www.npmjs.com/package/@axeforging/playwright-smart-locators)
 
 **AI-powered developer tool for diagnosing and fixing broken Playwright locators during local development.**
-**AI-powered developer tool for diagnosing and fixing broken Playwright locators during local development.**
 
 `playwright-smart-locators` helps developers quickly diagnose and fix broken CSS selectors in End-to-End (E2E) test scripts during local development. When a locator fails, it intercepts Playwright's `TimeoutError`, evaluates the broken selector against live and cached DOMs, and uses an AI LLM to suggest a corrected locator. It then generates a `-healed.ts` suggestion file for you to review and adopt into your codebase.
-`playwright-smart-locators` helps developers quickly diagnose and fix broken CSS selectors in End-to-End (E2E) test scripts during local development. When a locator fails, it intercepts Playwright's `TimeoutError`, evaluates the broken selector against live and cached DOMs, and uses an AI LLM to suggest a corrected locator. It then generates a `-healed.ts` suggestion file for you to review and adopt into your codebase.
 
-We extensively tested with local 7B models (e.g., **Qwen 2.5 Coder 7B** via Ollama and Open WebUI) to provide robust healing suggestions without significant API costs.
 We extensively tested with local 7B models (e.g., **Qwen 2.5 Coder 7B** via Ollama and Open WebUI) to provide robust healing suggestions without significant API costs.
 
 ---
@@ -18,26 +15,6 @@ We extensively tested with local 7B models (e.g., **Qwen 2.5 Coder 7B** via Olla
 ## 🔒 Data Privacy & Enterprise Security
 
 For confidential environments or strict data privacy, **exclusively use a local Ollama endpoint** (e.g., `qwen2.5:7b` via local Open WebUI). This prevents DOM data, proprietary class names, or sensitive layouts from leaving your secure network. Cloud providers (OpenAI/Anthropic) are suitable only if testing environments are public or data exfiltration is not a concern.
-
----
-
-## ⚠️ Important: Development Use Only
-
-This tool is designed for **local development and test maintenance**, not for CI/CD pipelines. Do not enable auto-healing in automated builds or deployment pipelines.
-
-**Why?**
-
-*   **False positives mask real bugs.** If a button genuinely failed to render due to an application regression, the AI may click a different element and report the test as passing — hiding the bug.
-*   **CI/CD tests exist to catch regressions.** Auto-healing defeats this purpose by working around failures instead of surfacing them.
-*   **AI suggestions require human review.** The healed locators are best-effort suggestions, not guaranteed-correct fixes. A developer should always review the `-healed.ts` files before adopting them.
-
-**Recommended pattern:** Use an environment variable to disable auto-healing in CI:
-
-```typescript
-use: {
-    enableAutoHeal: !process.env.CI, // Auto-heal locally, fail fast in pipelines
-}
-```
 
 ---
 
@@ -118,7 +95,6 @@ The example includes 6 intentionally broken tests that the AI will auto-heal at 
 ## 🚀 Execution Example (Local Development)
 
 During local development, `playwright-smart-locators` provides real-time console feedback on the healing process, detailing actions taken and summarizing generated suggestion files:
-During local development, `playwright-smart-locators` provides real-time console feedback on the healing process, detailing actions taken and summarizing generated suggestion files:
 
 ```plaintext
 Running 6 tests using 6 workers
@@ -138,8 +114,6 @@ Total Locators Healed: 6
 ✨ Generated auto-healed spec: /your-project/example/pages/login.page-healed.ts
 ✨ Generated auto-healed spec: /your-project/example/tests/example.spec-healed.ts
 ```
-
-Review the generated `-healed.ts` files, verify the suggested locators are correct, and adopt them into your spec files.
 
 Review the generated `-healed.ts` files, verify the suggested locators are correct, and adopt them into your spec files.
 
