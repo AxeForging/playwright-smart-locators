@@ -1,6 +1,6 @@
 {
   "name": "@axeforging/playwright-smart-locators",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "AI-powered self-healing smart web locators for Playwright tests.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
