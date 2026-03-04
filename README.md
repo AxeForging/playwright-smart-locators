@@ -116,7 +116,6 @@ The example includes 6 intentionally broken tests that the AI will auto-heal at 
 ---
 
 ## 🚀 Execution Example (Local Development)
-## 🚀 Execution Example (Local Development)
 
 During local development, `playwright-smart-locators` provides real-time console feedback on the healing process, detailing actions taken and summarizing generated suggestion files:
 During local development, `playwright-smart-locators` provides real-time console feedback on the healing process, detailing actions taken and summarizing generated suggestion files:
