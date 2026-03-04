@@ -4,11 +4,11 @@
 [![NPM Weekly Downloads](https://img.shields.io/npm/dw/@axeforging/playwright-smart-locators.svg?style=flat-square)](https://www.npmjs.com/package/@axeforging/playwright-smart-locators)
 [![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/@axeforging/playwright-smart-locators.svg?style=flat-square)](https://www.npmjs.com/package/@axeforging/playwright-smart-locators)
 
-**AI-powered self-healing web locators for Playwright tests.**
+**AI-powered developer tool for diagnosing and fixing broken Playwright locators during local development.**
 
-`playwright-smart-locators` automates the resolution of broken CSS selectors in End-to-End (E2E) test scripts. It intercepts Playwright `TimeoutError` exceptions, evaluates the broken locator against live and cached DOMs, uses an AI Large Language Model (LLM) to identify the correct element, executes the action, and rewrites your source code to permanently fix the test file.
+`playwright-smart-locators` helps developers quickly diagnose and fix broken CSS selectors in End-to-End (E2E) test scripts during local development. When a locator fails, it intercepts Playwright's `TimeoutError`, evaluates the broken selector against live and cached DOMs, and uses an AI LLM to suggest a corrected locator. It then generates a `-healed.ts` suggestion file for you to review and adopt into your codebase.
 
-We extensively tested with local 7B models (e.g., **Qwen 2.5 Coder 7B** via Ollama and Open WebUI) to provide robust auto-healing without significant API costs.
+We extensively tested with local 7B models (e.g., **Qwen 2.5 Coder 7B** via Ollama and Open WebUI) to provide robust healing suggestions without significant API costs.
 
 ---
 
@@ -18,15 +18,35 @@ For confidential environments or strict data privacy, **exclusively use a local 
 
 ---
 
+## ⚠️ Important: Development Use Only
+
+This tool is designed for **local development and test maintenance**, not for CI/CD pipelines. Do not enable auto-healing in automated builds or deployment pipelines.
+
+**Why?**
+
+*   **False positives mask real bugs.** If a button genuinely failed to render due to an application regression, the AI may click a different element and report the test as passing — hiding the bug.
+*   **CI/CD tests exist to catch regressions.** Auto-healing defeats this purpose by working around failures instead of surfacing them.
+*   **AI suggestions require human review.** The healed locators are best-effort suggestions, not guaranteed-correct fixes. A developer should always review the `-healed.ts` files before adopting them.
+
+**Recommended pattern:** Use an environment variable to disable auto-healing in CI:
+
+```typescript
+use: {
+    enableAutoHeal: !process.env.CI, // Auto-heal locally, fail fast in pipelines
+}
+```
+
+---
+
 ## ✨ Features
 
 *   **Seamless Proxy Interceptor**: Transparently wraps Playwright, catching native timeouts without test logic modification.
 *   **Proactive DOM Caching**: Records "Known Good" DOM snapshots before successful actions. When an element breaks, the AI compares historical and current DOMs to identify altered properties.
-*   **Self-Healing Output File**: Generates a `*.spec-healed.ts` file with permanently fixed locators alongside your original spec file.
+*   **Healed Suggestion File**: Generates a `*.spec-healed.ts` file with suggested locator fixes alongside your original spec file for you to review and adopt.
 *   **Page Object Model (POM) Parsing**: Dynamically parses the JavaScript execution stack. If a locator fails in a POM class (e.g., `login.page.ts`), the AI Healer traces the boundary and rewrites the POM file natively.
 *   **Top-7 Fallback Engine**: The AI returns the top 7 most confident locators, prioritized by confidence. The Healer executes these sequentially, allowing smaller models multiple attempts without test suite failure.
-*   **Syntactical Sanitization**: A heuristic regex scrubber automatically corrects SASS-like pseudo-class hallucinations (e.g., `tag(class1 class2)` to `tag.class1.class2`) common with quantized local models.
-*   **Automated Spec Rewriting**: Creates a physically updated `spec-healed.ts` file, replacing hardcoded failing locators with resilient ones. Copy-paste to permanently fix your build pipeline.
+*   **Syntactical Sanitization**: A heuristic regex scrubber automatically corrects SASS-like pseudo-class hallucinations (e.g., `tag(class1 class2)` to `tag.class1.class2`) common with quantized local models. Includes a case-insensitive CSS fallback that retries selectors in lowercase when the original casing fails.
+*   **Spec Rewrite Proposals**: Creates an updated `spec-healed.ts` file with proposed locator replacements. Review the suggestions and copy them into your spec files to permanently fix your tests.
 
 ---
 
@@ -35,7 +55,7 @@ For confidential environments or strict data privacy, **exclusively use a local 
 ### 1. Install the package:
 
 ```bash
-npm install -D playwright-smart-locators
+npm install -D @axeforging/playwright-smart-locators
 ```
 
 ### 2. Wrap your `playwright.config.ts`:
@@ -48,10 +68,10 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
     reporter: [
         ['html'],
-        ['playwright-smart-locators/dist/reporter'] // Required for Auto-Spec Rewriting
+        ['@axeforging/playwright-smart-locators/dist/reporter'] // Required for Auto-Spec Rewriting
     ],
     use: {
-        enableAutoHeal: true,
+        enableAutoHeal: !process.env.CI, // Enable in local dev, disable in CI/CD
         aiModel: 'qwen2.5:7b', // Local Ollama model for maximum privacy
         aiPipeUrl: process.env.AI_API_URL, // e.g., Open WebUI, OpenAI, or Anthropic endpoint
         aiAdminKey: process.env.AI_API_KEY, // e.g., 'sk-...'
@@ -66,7 +86,7 @@ Replace standard Playwright `@playwright/test` imports in your spec files:
 
 ```diff
 - import { test, expect } from '@playwright/test';
-+ import { test, expect } from 'playwright-smart-locators';
++ import { test, expect } from '@axeforging/playwright-smart-locators';
 ```
 
 ---
@@ -90,9 +110,9 @@ The example includes 6 intentionally broken tests that the AI will auto-heal at 
 
 ---
 
-## 🚀 Execution Example
+## 🚀 Execution Example (Local Development)
 
-`playwright-smart-locators` provides real-time console feedback on the auto-healing process, detailing actions taken and summarizing rewritten source files:
+During local development, `playwright-smart-locators` provides real-time console feedback on the healing process, detailing actions taken and summarizing generated suggestion files:
 
 ```plaintext
 Running 6 tests using 6 workers
@@ -109,9 +129,11 @@ Running 6 tests using 6 workers
 🧠 Smart Locators Summary
 =========================================
 Total Locators Healed: 6
-✨ Generated auto-healed spec: /home/oa/workspace/projects/ai-healing/ai-healer-lib/example/pages/login.page-healed.ts
-✨ Generated auto-healed spec: /home/oa/workspace/projects/ai-healing/ai-healer-lib/example/tests/example.spec-healed.ts
+✨ Generated auto-healed spec: /your-project/example/pages/login.page-healed.ts
+✨ Generated auto-healed spec: /your-project/example/tests/example.spec-healed.ts
 ```
+
+Review the generated `-healed.ts` files, verify the suggested locators are correct, and adopt them into your spec files.
 
 ---
 
@@ -139,15 +161,15 @@ sequenceDiagram
     LLM-->>Proxy: Return Top 7 Resilient Locators (Priority Ranked)
     
     Note over Test, Disk: ✨ Execution & Rewrite
-    Proxy->>Test: Bypass failure & click newly generated locator
-    Proxy->>Disk: Physically rewrite code to *.spec-healed.ts
+    Proxy->>Test: Try healed locator & continue test run
+    Proxy->>Disk: Generate *.spec-healed.ts suggestion file for review
 ```
 
-1.  **Record Phase**: During a successful test run, the library caches a stripped "Known Good" DOM snapshot locally (e.g., `.ai-healer-cache.json`) before successful locator actions.
+1.  **Record Phase**: During a successful test run, the library caches a stripped "Known Good" DOM snapshot locally (e.g., `.smart-locators-cache.json`) before successful locator actions.
 2.  **Intercept Phase**: If an element changes (e.g., `<button class="btn-primary">` to `<button class="btn-accent">`), the proxy intercepts Playwright's `TimeoutError`.
 3.  **Contextual Evaluation**: The proxy sends a payload to the LLM with the **Broken Locator**, **Known Good DOM**, and **Current Broken DOM**.
 4.  **Resolution**: The LLM evaluates DOM differences to identify the element and calculates the most resilient new CSS selector based on a strict priority hierarchy.
-5.  **Execution & Rewrite**: The library bypasses the failure, executes the click with the healed locator, and the reporter rewrites the test code to disk.
+5.  **Execution & Suggestion**: The library tries the healed locator to continue your test session, and the reporter generates a `-healed.ts` suggestion file for you to review before adopting the fix.
 
 ---
 

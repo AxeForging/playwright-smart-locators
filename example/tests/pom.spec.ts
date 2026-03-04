@@ -1,4 +1,4 @@
-import { test, expect } from 'playwright-smart-locators';
+import { test, expect } from '@axeforging/playwright-smart-locators';
 import { LoginPage } from '../pages/login.page';
 
 test.describe('POM Auto-Healing Scenarios', () => {

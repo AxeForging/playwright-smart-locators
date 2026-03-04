@@ -3,3 +3,8 @@ dist/
 .DS_Store
 *.tgz
 .env
+*-healed.ts
+test-results/
+.smart-locators-cache.json
+example/node_modules/
+example/package-lock.json

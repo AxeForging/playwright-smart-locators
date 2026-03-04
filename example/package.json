@@ -11,6 +11,6 @@
         "@types/node": "^20.0.0"
     },
     "dependencies": {
-        "@axeforging/playwright-smart-locators": "^1.0.0"
+        "@axeforging/playwright-smart-locators": "file:.."
     }
 }

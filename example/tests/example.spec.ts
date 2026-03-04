@@ -1,4 +1,4 @@
-import { test, expect } from 'playwright-smart-locators';
+import { test, expect } from '@axeforging/playwright-smart-locators';
 
 test.describe('Auto-Healing React Application Scenarios', () => {
     test.beforeEach(async ({ page }) => {
