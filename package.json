@@ -55,12 +55,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-username/ai-healer.git"
+    "url": "git+https://github.com/AxeForging/playwright-smart-locators"
   },
   "bugs": {
-    "url": "https://github.com/your-username/ai-healer/issues"
+    "url": "https://github.com/AxeForging/playwright-smart-locators/issues"
   },
-  "homepage": "https://github.com/your-username/ai-healer#readme",
-  "author": "QA Architecture Team",
-  "license": "ISC"
+  "homepage": "https://github.com/AxeForging/playwright-smart-locators",
+  "author": "R&D Team",
+  "license": "MIT"
 }
